@@ -59,7 +59,10 @@ function logToEvent(log) {
     if (log.indexOf('MOTION') > -1) {
         return parseMotionEvent(log);
     }
-    return parseRecordingEvent(log);
+    if (log.indexOf('motionRecording') > -1) {
+        return parseRecordingEvent(log);
+    }
+    throw new Error('Unexpected Event type');
 }
 
 module.exports = logToEvent;
