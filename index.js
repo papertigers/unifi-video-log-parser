@@ -25,7 +25,7 @@ function logToEvent(log) {
     logsplit = log.split(/\s+/);
 
     var uevent = {};
-    uevent.camear_id = logsplit[UCAMERA].match(/^Camera\[(.*)\]$/)[1];
+    uevent.camera_id = logsplit[UCAMERA].match(/^Camera\[(.*)\]$/)[1];
     uevent.event = logsplit[UEVENT];
     uevent.camera_desc = logsplit[UCAMERADESC];
     uevent.recording_id = logsplit[URECORDINGID]
