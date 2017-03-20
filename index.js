@@ -32,8 +32,10 @@ function parseRecordingEvent(log) {
     uevent.camera_id = logsplit[RCAMERA].match(/^Camera\[(.*)\]$/)[1];
     uevent.event = logsplit[REVENT];
     uevent.camera_desc = logsplit[RCAMERADESC];
+    // Replace ","  if present.  Unsure if multiple ID's can ever be present
     uevent.recording_id = logsplit[RRECORDINGID]
         .match(/^motionRecording\:(.*)$/)[1]
+        .replace(',', '');
     uevent.timestamp = new Date(+logsplit[RTIMESTAMP].replace('.', ""));
 
     return uevent;
