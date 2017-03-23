@@ -1,18 +1,5 @@
 var assert = require('assert-plus');
 
- // Define log offsets for values
-var MTIMESTAMP = 0;
-var MCAMERA = 4;
-var MEVENT = 6;
-var MCAMERADESC = 7;
-var MRECORDINGID = 8;
-
-var RTIMESTAMP = 0;
-var RCAMERA = 4;
-var REVENT = 6;
-var RCAMERADESC = 5;
-var RRECORDINGID = 7;
-
 /*
  * UniFi Event
  * {
@@ -25,33 +12,34 @@ var RRECORDINGID = 7;
  *
  */
 
+var motion_re = /(^\d+\.\d{3}) .+Camera\[(.*)\] MOTION (STARTED|STOPPED) \((.*)\) recording\:([a-z0-9]+\b)/;
+var recording_re = /(^\d+\.\d{3}) .+Camera\[(.*)\] \((.*)\) (ADDING|CLOSING) motionRecording\:([a-z0-9]+\b)/;
+
 function parseRecordingEvent(log) {
-    logsplit = log.split(/\s+/);
+    logsplit = log.match(recording_re);
+    assert.array(logsplit, 'Unexpected log line format');
 
     var uevent = {};
-    uevent.camera_id = logsplit[RCAMERA].match(/^Camera\[(.*)\]$/)[1];
-    uevent.event = logsplit[REVENT];
-    uevent.camera_desc = logsplit[RCAMERADESC];
-    // Replace ","  if present.  Unsure if multiple ID's can ever be present
-    uevent.recording_id = logsplit[RRECORDINGID]
-        .match(/^motionRecording\:(.*)$/)[1]
-        .replace(',', '');
-    uevent.timestamp = new Date(+logsplit[RTIMESTAMP].replace('.', ""));
+    uevent.camera_id = logsplit[2];
+    uevent.event = logsplit[4];
+    uevent.camera_desc = logsplit[3];
+    uevent.recording_id = logsplit[5];
+    uevent.timestamp = new Date(+logsplit[1].replace('.', ""));
 
     return uevent;
 
 }
 
 function parseMotionEvent(log) {
-    logsplit = log.split(/\s+/);
+    logsplit = log.match(motion_re);
+    assert.array(logsplit, 'Unexpected log line format');
 
     var uevent = {};
-    uevent.camera_id = logsplit[MCAMERA].match(/^Camera\[(.*)\]$/)[1];
-    uevent.event = logsplit[MEVENT];
-    uevent.camera_desc = logsplit[MCAMERADESC];
-    uevent.recording_id = logsplit[MRECORDINGID]
-        .match(/^recording\:(.*)$/)[1]
-    uevent.timestamp = new Date(+logsplit[MTIMESTAMP].replace('.', ""));
+    uevent.camera_id = logsplit[2];
+    uevent.event = logsplit[3];
+    uevent.camera_desc = logsplit[4];
+    uevent.recording_id = logsplit[5]
+    uevent.timestamp = new Date(+logsplit[1].replace('.', ""));
 
     return uevent;
 }
@@ -64,7 +52,7 @@ function logToEvent(log) {
     if (log.indexOf('motionRecording') > -1) {
         return parseRecordingEvent(log);
     }
-    throw new Error('Unexpected Event type');
+    console.warn('Unknown Event');
 }
 
 module.exports = logToEvent;
