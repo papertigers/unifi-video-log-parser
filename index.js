@@ -13,7 +13,7 @@ var VError = require('verror');
  *
  */
 
-var motion_re = /(^\d+\.\d{3}) .+Camera\[(.*)\] MOTION (STARTED|STOPPED) \((.*)\) recording\:([a-z0-9]+\b)/;
+var motion_re = /(^\d+\.\d{3}) .+Camera\[(.*)\] MOTION (STARTED|ENDED) \((.*)\) recording\:([a-z0-9]+\b)/;
 var recording_re = /(^\d+\.\d{3}) .+Camera\[(.*)\] \((.*)\) (ADDING|CLOSING) motionRecording\:([a-z0-9]+\b)/;
 
 function parseRecordingEvent(log) {
