@@ -1,4 +1,5 @@
 var assert = require('assert-plus');
+var VError = require('verror');
 
 /*
  * UniFi Event
@@ -46,13 +47,19 @@ function parseMotionEvent(log) {
 
 function logToEvent(log) {
     assert.string(log, 'log line to parse');
+
     if (log.indexOf('MOTION') > -1) {
         return parseMotionEvent(log);
     }
     if (log.indexOf('motionRecording') > -1) {
         return parseRecordingEvent(log);
     }
-    console.warn('Unknown Event');
+    throw new VError({
+        'name': 'UnknownEvent',
+        'info': {
+            'log_line': log
+        }
+    }, 'failed to parse log event');
 }
 
 module.exports = logToEvent;

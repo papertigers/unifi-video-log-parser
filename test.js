@@ -1,4 +1,5 @@
 var test = require('./index');
+var VError = require('verror');
 
 var motionlog = '1489894605.034 2017-03-19 03:36:45.034/UTC: INFO   Camera[F09FC213C2B1] MOTION STARTED (FrontYard) recording:58cdfccd84aeda172faca267 for motion:46 clockOffset:-93861100 in app-event-bus-28';
 var recordinglog = '1489991988.610 2017-03-20 06:39:48.610/UTC: INFO   Camera[F09FC213C2B1] (FrontYard) ADDING motionRecording:58cf79340cf2edb06df5202e, open#:1 prepadding#:0 in app-event-bus-2';
@@ -16,4 +17,10 @@ console.log(test(recordinglog));
 //Unknown log line
 var unknown = '1490295337.626 2017-03-23 18:55:37.626/UTC: INFO   Camera[F09FC22FDF80] (FrontPorch) Reset clock offset for channel:1 in app-event-bus-21';
 
-test(unknown);
+try {
+	test(unknown);
+} catch(err) {
+    console.log('=========ERROR=========');
+    console.log(err.message);
+	console.log(VError.info(err));
+}
