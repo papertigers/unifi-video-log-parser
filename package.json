@@ -1,6 +1,6 @@
 {
   "name": "unifi-video-log-parser",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Parse UniFi record logs into events.",
   "main": "index.js",
   "scripts": {
